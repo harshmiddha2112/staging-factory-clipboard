@@ -6,7 +6,8 @@
 		{
 			"matches": [
                 "https://sfctrl.practodev.com/instance/staging*"
-            ]
+            ],
+            "js": ["content.js"]
         }
     ],
 
