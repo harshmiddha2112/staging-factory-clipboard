@@ -1,33 +1,45 @@
 window.addEventListener('DOMContentLoaded', function(){
 
-	var stagingName = document.getElementById('staging-name');
-	var copyBtn = document.getElementById('btn-copy');
-	var form = document.getElementById('staging-form');
-	var message = document.getElementById('message');
-	
+	var stagingName = $('#staging-name');
+	var copyBtn = $('#btn-copy');
+	var form = $('#staging-form');
+	var message = $('#message');
+	var loader = $('#loader');
+	loader.hide();
+
 	var success = function() {
-		message.innerHTML = 'Copied !';
-		message.classList.add('message--success');
-		message.classList.remove('message--error');
-		copyBtn.disabled = false;
+		loader.hide();
+		message
+			.show()
+			.html('Copied !')
+			.addClass('message--success')
+			.removeClass('message--error');
+
+		copyBtn.attr('disabled', false);
 	};
 	var error = function() {
-		message.innerHTML = 'Error !';
-		message.classList.add('message--error');
-		message.classList.remove('message--success');
-		copyBtn.disabled = false;
+		loader.hide();
+		message
+			.show()
+			.html('Error !')
+			.addClass('message--error')
+			.removeClass('message--success');
+
+		copyBtn.attr('disabled', false);
 	};
 
-	form.onsubmit = function(){
-		copyBtn.disabled = true;
-		copyToClipboard();
-		return false;
-	};
-
-	function copyToClipboard(){
-		if(stagingName.value){
-			sendSignal(stagingName.value);
+	form.submit(function(){
+		if(stagingName.val()){
+			message.hide();
+			loader.show();
+			copyBtn.attr('disabled', true);
+			copyToClipboard(stagingName.val());
 		}
+		return false;
+	});
+
+	function copyToClipboard(value){
+		sendSignal(value);
 	};
 
 
@@ -82,3 +94,4 @@ window.addEventListener('DOMContentLoaded', function(){
 		}
 	})();
 });
+

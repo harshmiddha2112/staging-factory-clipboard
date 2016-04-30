@@ -15,6 +15,7 @@ function getStaingSshUrl(stagingName) {
 				if(arr) {
 					console.log(arr[0]);
 					copyToClipboard(arr[0]);
+					storeStagingName(stagingName);
 					sendSignal('success');
 				}else{
 					// chromePort.postMessage(msg);
@@ -55,7 +56,7 @@ function copyToClipboard(value) {
 chrome.extension.onConnect.addListener(function(port) {
   var chromePort = port;
   port.onMessage.addListener(function(data) {
-        getStaingSshUrl(data.stagingName);
+    getStaingSshUrl(data.stagingName);
   });
 });
 
@@ -66,5 +67,17 @@ function sendSignal(response) {
 	port.postMessage({ response: response });
 }
 
+function storeStagingName(name){
+	console.log('going to save the staging name -> ' + name);
+	chrome.storage.sync.set({ "staging_name_clipboard": name }, function(){
+		//callback.. 
+	});
+}
 
+function getStagingNameFromStorage(){
+	chrome.storage.sync.get(["staging_name_clipboard"], function(item){
+	    //  items = [ { "yourBody": "myBody" } ]
+	    return item.staging_name_clipboard;
+	});
+}
 
