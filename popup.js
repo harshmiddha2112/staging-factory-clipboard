@@ -7,6 +7,8 @@ window.addEventListener('DOMContentLoaded', function(){
 	var loader = $('#loader');
 	loader.hide();
 
+	sendSignal(null, true);
+
 	var success = function() {
 		loader.hide();
 		message
@@ -43,20 +45,23 @@ window.addEventListener('DOMContentLoaded', function(){
 	};
 
 
-	function sendSignal(stagingName) {
+	function sendSignal(stagingName, checkStorage) {
 		var port = chrome.extension.connect({
 			name: "Popup signalling", 
 		});
-		port.postMessage({ stagingName: stagingName });
+		port.postMessage({ stagingName: stagingName, checkStorage: checkStorage });
 	}
 
 	chrome.extension.onConnect.addListener(function(port) {
 	  	var chromePort = port;
 	  	port.onMessage.addListener(function(data) {
-	    	if(data.response === 'success'){
-	    		success();
-	    	}else {
-	    		error();
+				if(data.response === 'success'){
+					success();
+				}else if(data.response === 'error') {
+					error();
+				}else {
+					//staging name for the first signal
+					stagingName.val(data.storedStagingName);
 	    	}
 	  	});
 	});

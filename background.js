@@ -1,6 +1,6 @@
 // background.js
 var chromePort;
-function getStaingSshUrl(stagingName) {
+function getStagingSshUrl(stagingName) {
 	var stagingUrl = 'https://sfctrl.practodev.com/instance/staging-' + stagingName;
 	var request = new XMLHttpRequest();
 	request.open('GET', stagingUrl, true);
@@ -56,15 +56,20 @@ function copyToClipboard(value) {
 chrome.extension.onConnect.addListener(function(port) {
   var chromePort = port;
   port.onMessage.addListener(function(data) {
-    getStaingSshUrl(data.stagingName);
+		if(data.checkStorage){
+			//storage check call for initial popup load
+			getStagingNameFromStorage();
+		}else{
+		  getStagingSshUrl(data.stagingName);
+		}
   });
 });
 
-function sendSignal(response) {
+function sendSignal(response, storedStagingName) {
 	var port = chrome.extension.connect({
 		name: "Background signalling", 
 	});
-	port.postMessage({ response: response });
+	port.postMessage({ response: response, storedStagingName: storedStagingName });
 }
 
 function storeStagingName(name){
@@ -77,7 +82,9 @@ function storeStagingName(name){
 function getStagingNameFromStorage(){
 	chrome.storage.sync.get(["staging_name_clipboard"], function(item){
 	    //  items = [ { "yourBody": "myBody" } ]
-	    return item.staging_name_clipboard;
+	    // send staging_name signal to popup.js
+	    console.log('signalling the staging name from background.js');
+	    sendSignal(null, item.staging_name_clipboard);
 	});
 }
 
