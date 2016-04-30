@@ -1,13 +1,44 @@
-<style>
-
-</style>
-
+<!-- Stylesheets -->
+<link href='https://fonts.googleapis.com/css?family=Fira+Sans:400,300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="main.css">
 
 <body>
-	<h2>Staging Name</h2>
+
+	<h1>Staging Clipboard</h1>
+
 	<form id="staging-form">
-		<input type="text" placeholder="<sherlock>" id="staging-name">
-		<button id="btn-copy">Copy to clipboard</button>
+	<!-- Input box for staging name -->
+		<span class="input input--kaede">
+			<input class="input__field input__field--kaede" type="text" id="staging-name" />
+			<label class="input__label input__label--kaede" for="staging-name">
+				<span class="input__label-content input__label-content--kaede">Staging name</span>
+			</label>
+		</span>
+
+		<!-- Action Button -->
+		<button id="btn-copy" class="btn-copy">Copy to clipboard</button>
 	</form>
+
+	<footer>
+
+		<!-- Material Switch -->
+		<div class="left">
+			<label class="status">Staging Status</label>
+			<div class="material-switch pull-right">
+	        <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox"/>
+	        <label for="someSwitchOptionPrimary" class="label-green"></label>
+	    </div>
+	  </div>
+
+		<!-- Flash Messages -->
+	  <div class="right">
+			<span id="message" class="message"></span>
+	  </div>
+
+	</footer>
+
+	<!-- Javascripts -->
+	<script type="text/javascript" src="jquery-1.12.1.min.js"></script>
+	<script type="text/javascript" src="classie.js"></script>
 	<script type="text/javascript" src="popup.js"></script>
 </body>
