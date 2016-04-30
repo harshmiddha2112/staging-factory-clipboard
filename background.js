@@ -19,12 +19,12 @@ function getStagingSshUrl(stagingName) {
 					sendSignal('success');
 				}else{
 					// chromePort.postMessage(msg);
-					sendSignal('error');	
+					sendSignal('stagingNotStarted');
 				}
 			} else {
-				console.error(request.statusText);
 				// chromePort.postMessage(msg);
 				sendSignal('error');
+				console.error(request.statusText);
 			}
 		}
 	};

@@ -24,8 +24,8 @@
 		<div class="left">
 			<label class="status">Staging Status</label>
 			<div class="material-switch pull-right">
-	        <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox"/>
-	        <label for="someSwitchOptionPrimary" class="label-green"></label>
+	        <input id="staging-status" name="staging-status" type="checkbox" checked="true" />
+	        <label for="staging-status" class="label-green"></label>
 	    </div>
 	  </div>
 
@@ -43,6 +43,13 @@
 		</svg>
 		<label class="status">Just a moment..</label>
 	</div>
+
+	<!-- Arrow Guide to start staging-->
+	<div class="guide-arrow" style="display: none;" id="guide-arrow">
+		<img src="guide-arrow.min.svg" alt="Click here">
+		<label class="status">Click Me !</label>
+	</div>
+
 	<!-- Javascripts -->
 	<script type="text/javascript" src="jquery-1.12.1.min.js"></script>
 	<script type="text/javascript" src="classie.js"></script>
