@@ -1,6 +1,6 @@
 // background.js
 var chromePort;
-function getStaingSshUrl(stagingName) {
+function getStagingSshUrl(stagingName) {
 	var stagingUrl = 'https://sfctrl.practodev.com/instance/staging-' + stagingName;
 	var request = new XMLHttpRequest();
 	request.open('GET', stagingUrl, true);
@@ -15,15 +15,16 @@ function getStaingSshUrl(stagingName) {
 				if(arr) {
 					console.log(arr[0]);
 					copyToClipboard(arr[0]);
+					storeStagingName(stagingName);
 					sendSignal('success');
 				}else{
 					// chromePort.postMessage(msg);
-					sendSignal('error');	
+					sendSignal('stagingNotStarted');
 				}
 			} else {
-				console.error(request.statusText);
 				// chromePort.postMessage(msg);
 				sendSignal('error');
+				console.error(request.statusText);
 			}
 		}
 	};
@@ -55,16 +56,35 @@ function copyToClipboard(value) {
 chrome.extension.onConnect.addListener(function(port) {
   var chromePort = port;
   port.onMessage.addListener(function(data) {
-        getStaingSshUrl(data.stagingName);
+		if(data.checkStorage){
+			//storage check call for initial popup load
+			getStagingNameFromStorage();
+		}else{
+		  getStagingSshUrl(data.stagingName);
+		}
   });
 });
 
-function sendSignal(response) {
+function sendSignal(response, storedStagingName) {
 	var port = chrome.extension.connect({
 		name: "Background signalling", 
 	});
-	port.postMessage({ response: response });
+	port.postMessage({ response: response, storedStagingName: storedStagingName });
 }
 
+function storeStagingName(name){
+	console.log('going to save the staging name -> ' + name);
+	chrome.storage.sync.set({ "staging_name_clipboard": name }, function(){
+		//callback.. 
+	});
+}
 
+function getStagingNameFromStorage(){
+	chrome.storage.sync.get(["staging_name_clipboard"], function(item){
+	    //  items = [ { "yourBody": "myBody" } ]
+	    // send staging_name signal to popup.js
+	    console.log('signalling the staging name from background.js');
+	    sendSignal(null, item.staging_name_clipboard);
+	});
+}
 

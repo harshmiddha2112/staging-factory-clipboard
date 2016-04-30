@@ -9,7 +9,7 @@
 	<form id="staging-form">
 	<!-- Input box for staging name -->
 		<span class="input input--kaede">
-			<input class="input__field input__field--kaede" type="text" id="staging-name" />
+			<input class="input__field input__field--kaede" type="text" id="staging-name" name="staging-name"/>
 			<label class="input__label input__label--kaede" for="staging-name">
 				<span class="input__label-content input__label-content--kaede">Staging name</span>
 			</label>
@@ -20,13 +20,12 @@
 	</form>
 
 	<footer>
-
 		<!-- Material Switch -->
 		<div class="left">
 			<label class="status">Staging Status</label>
 			<div class="material-switch pull-right">
-	        <input id="someSwitchOptionPrimary" name="someSwitchOption001" type="checkbox"/>
-	        <label for="someSwitchOptionPrimary" class="label-green"></label>
+	        <input id="staging-status" name="staging-status" type="checkbox" checked="true" />
+	        <label for="staging-status" class="label-green"></label>
 	    </div>
 	  </div>
 
@@ -34,8 +33,22 @@
 	  <div class="right">
 			<span id="message" class="message"></span>
 	  </div>
-
 	</footer>
+
+	<!-- Loader -->
+	<div class="loader" id="loader">
+		<!-- Loader -->
+		<svg class="spinner" width="22px" height="22px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+			<circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+		</svg>
+		<label class="status">Just a moment..</label>
+	</div>
+
+	<!-- Arrow Guide to start staging-->
+	<div class="guide-arrow" style="display: none;" id="guide-arrow">
+		<img src="guide-arrow.min.svg" alt="Click here">
+		<label class="status">Click Me !</label>
+	</div>
 
 	<!-- Javascripts -->
 	<script type="text/javascript" src="jquery-1.12.1.min.js"></script>

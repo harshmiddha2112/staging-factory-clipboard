@@ -1,54 +1,101 @@
 window.addEventListener('DOMContentLoaded', function(){
 
-	var stagingName = document.getElementById('staging-name');
-	var copyBtn = document.getElementById('btn-copy');
-	var form = document.getElementById('staging-form');
-	var message = document.getElementById('message');
-	
-	var success = function() {
-		message.innerHTML = 'Copied !';
-		message.classList.add('message--success');
-		message.classList.remove('message--error');
-		copyBtn.disabled = false;
-	};
-	var error = function() {
-		message.innerHTML = 'Error !';
-		message.classList.add('message--error');
-		message.classList.remove('message--success');
-		copyBtn.disabled = false;
-	};
+	var stagingName = $('#staging-name');
+	var copyBtn = $('#btn-copy');
+	var form = $('#staging-form');
+	var message = $('#message');
+	var loader = $('#loader');
+	var stagingStatusCheckbox = $('#staging-status');
+	var guideArrow = $('#guide-arrow');
+	loader.hide();
 
-	form.onsubmit = function(){
-		copyBtn.disabled = true;
-		copyToClipboard();
-		return false;
-	};
+	sendSignal(null, true);
 
-	function copyToClipboard(){
-		if(stagingName.value){
-			sendSignal(stagingName.value);
+	//all action here
+	form.submit(function(){
+		if(stagingName.val()){
+			message.hide();
+			loader.show();
+			copyBtn.attr('disabled', true);
+			copyToClipboard(stagingName.val());
 		}
+		return false;
+	});
+
+	function copyToClipboard(value){
+		sendSignal(value);
 	};
 
 
-	function sendSignal(stagingName) {
+	function sendSignal(stagingName, checkStorage) {
 		var port = chrome.extension.connect({
 			name: "Popup signalling", 
 		});
-		port.postMessage({ stagingName: stagingName });
+		port.postMessage({ stagingName: stagingName, checkStorage: checkStorage });
 	}
 
 	chrome.extension.onConnect.addListener(function(port) {
 	  	var chromePort = port;
 	  	port.onMessage.addListener(function(data) {
-	    	if(data.response === 'success'){
-	    		success();
-	    	}else {
-	    		error();
+				if(data.response === 'success'){
+					success();
+				}else if(data.response === 'stagingNotStarted') {
+					warning();
+				}else if(data.response === 'error') {
+					error();
+				}else {
+					//staging name for the first signal
+					stagingName.val(data.storedStagingName);
 	    	}
 	  	});
 	});
 
+	// all good, show off now
+	var success = function() {
+		loader.hide();
+		message
+			.show()
+			.html('Copied !')
+			.addClass('message--success')
+			.removeClass('message--error');
+
+		copyBtn.attr('disabled', false);
+	};
+
+	// give staging off signal
+	var warning = function() {
+		loader.hide();
+		message
+			.show()
+			.html('Staging not running !')
+			.addClass('message--error')
+			.removeClass('message--success');
+		copyBtn.attr('disabled', false);
+		stagingStatusCheckbox.attr('checked', false);
+		guideArrow.show();
+	};
+
+	//unexpected error comes up T_T
+	var error = function() {
+		loader.hide();
+		message
+			.show()
+			.html('Error !')
+			.addClass('message--error')
+			.removeClass('message--success');
+
+		copyBtn.attr('disabled', false);
+	};
+
+	// open staging url in new tab when toggled
+	stagingStatusCheckbox.change(function(){
+		var url = "https://sfctrl.practodev.com/start_staging?instance_name=" + stagingName.val();
+		var checked = $(this).is(':checked');
+		guideArrow.hide();
+		if(checked && stagingName.val()){
+			chrome.tabs.create({url: url});
+		}
+	});
 
 
 	/* Input effects */
@@ -82,3 +129,4 @@ window.addEventListener('DOMContentLoaded', function(){
 		}
 	})();
 });
+
