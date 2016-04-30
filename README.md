@@ -22,4 +22,4 @@ Read these & start contributing:
 ## License
 Staging Factory Clipboard is licensed under the terms of the MIT License.
 
-Copyright (c) 2016 Staging Clipboard
+Copyright (c) 2016 Harsh Middha
